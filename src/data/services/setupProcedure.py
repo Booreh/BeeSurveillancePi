@@ -1,17 +1,24 @@
+from data.services.jsonUtils import read_json, write_json
+import os
+import random
 import subprocess
 import cv2
 class SetupProcedure:
-    def __init__(self, device_id):
-        self.device_id = device_id
+    def __init__(self, camera_id=0):
+        self.device_folder = "device"
+        self.device_id_file = os.path.join(self.device_folder, "device_id.json")
+        self.camera_id = camera_id
+        
+
 
 
 
     def checkCameraConnection(self):
         
         try:
-            capture = cv2.VideoCapture(self.device_id)
+            capture = cv2.VideoCapture(self.camera_id)
             if not capture.isOpened():
-                print(f"Unable to connect to camera ({self.device_id}). Please check the device for issues.")
+                print(f"Unable to connect to camera ({self.camera_id}). Please check the device for issues.")
                 return False
             else:
                 print("Camera Found")
@@ -38,6 +45,37 @@ class SetupProcedure:
         return True
     
 
+    def generateDeviceId(self):
+        return random.randint(1000, 9999)
+    
+    def getDeviceId(self):
+        data = read_json(self.device_id_file)
+        if data:
+            return data.get("device_id")
+        else:
+            return None
+
+    def setDeviceId(self, device_id):
+        if not os.path.exists(self.device_folder):
+            os.makedirs(self.device_folder)
+        write_json({"device_id": device_id}, self.device_id_file)
+
+
+    
+    def checkDeviceId(self):
+        device_id = self.getDeviceId()
+        if device_id:
+            print(f"Device ID: {device_id}")
+        else:
+            print("No device ID found. Generating a new one...")
+            device_id = self.generateDeviceId()
+            self.setDeviceId(device_id)
+            print(f"New device ID generated: {device_id}")
+
+    
+    
+    
+
 
     def runAllSetupProcedures(self):
         """
@@ -48,7 +86,8 @@ class SetupProcedure:
         """
         camera_connected = self.checkCameraConnection()
         internet_access = self.checkInternetAccess()
+        check_deviceID = self.checkDeviceId()
         # Add more setup procedures here
         
         # Return True if all setup procedures succeed, False otherwise
-        return camera_connected and internet_access
+        return camera_connected and internet_access and self.getDeviceId() is not None

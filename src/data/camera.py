@@ -5,11 +5,11 @@ from domain.image import Image
 import time
 
 class Webcam:
-    def __init__(self, device_id=0):
-        self.device_id = device_id
-        self.capture = cv2.VideoCapture(self.device_id)
+    def __init__(self, camera_id=0):
+        self.camera_id = camera_id
+        self.capture = cv2.VideoCapture(self.camera_id)
         if not self.capture.isOpened():
-            raise ValueError("Unable to connect to webcam. Please check the device ID.")
+            raise ValueError("Unable to connect to webcam. Please check the camera ID.")
 
     def capture_image(self, folder_path):
         ret, frame = self.capture.read()

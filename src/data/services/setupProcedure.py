@@ -4,21 +4,18 @@ import random
 import subprocess
 import cv2
 class SetupProcedure:
-    def __init__(self, camera_id=0):
+    def __init__(self):
         self.device_folder = "device"
-        self.device_id_file = os.path.join(self.device_folder, "device_id.json")
-        self.camera_id = camera_id
+        self.device_file = os.path.join(self.device_folder, "device.json")
         
-
-
-
+    
 
     def checkCameraConnection(self):
-        
+        device_data = self.getDeviceData()
         try:
-            capture = cv2.VideoCapture(self.camera_id)
+            capture = cv2.VideoCapture(device_data["camera_id"])
             if not capture.isOpened():
-                print(f"Unable to connect to camera ({self.camera_id}). Please check the device for issues.")
+                print(f"Unable to connect to camera with id: {device_data["camera_id"]}. Please check the device for issues.")
                 return False
             else:
                 print("Camera Found")
@@ -48,29 +45,27 @@ class SetupProcedure:
     def generateDeviceId(self):
         return random.randint(1000, 9999)
     
-    def getDeviceId(self):
-        data = read_json(self.device_id_file)
-        if data:
-            return data.get("device_id")
-        else:
-            return None
+    def getDeviceData(self):
+        return read_json(self.device_file)
+        
 
-    def setDeviceId(self, device_id):
+    def setDeviceData(self, device_data):
         if not os.path.exists(self.device_folder):
             os.makedirs(self.device_folder)
-        write_json({"device_id": device_id}, self.device_id_file)
+        write_json(device_data, self.device_file)
 
 
     
-    def checkDeviceId(self):
-        device_id = self.getDeviceId()
-        if device_id:
-            print(f"Device ID: {device_id}")
+    def checkDeviceData(self):
+        device_data = self.getDeviceData()
+        if device_data:
+            print(f"Device Identification found. deviceID: {device_data['device_id']} cameraID: {device_data['camera_id']}")
         else:
-            print("No device ID found. Generating a new one...")
-            device_id = self.generateDeviceId()
-            self.setDeviceId(device_id)
-            print(f"New device ID generated: {device_id}")
+            print("No device Identification found. Generating new ones...")
+            device_data = {"device_id": self.generateDeviceId(), "camera_id": 0}
+            self.setDeviceData(device_data)
+            print(f"New device ID ({device_data['device_id']}) and camera ID ({device_data['camera_id']}) generated.")
+        return device_data
 
     
     
@@ -84,10 +79,10 @@ class SetupProcedure:
         Returns:
             bool: True if all setup procedures succeed, False otherwise.
         """
+        check_deviceData = self.checkDeviceData()
         camera_connected = self.checkCameraConnection()
         internet_access = self.checkInternetAccess()
-        check_deviceID = self.checkDeviceId()
         # Add more setup procedures here
         
         # Return True if all setup procedures succeed, False otherwise
-        return camera_connected and internet_access and self.getDeviceId() is not None
+        return camera_connected and internet_access and check_deviceData is not None

@@ -5,7 +5,7 @@ from domain.image import Image
 import time
 
 class Webcam:
-    def __init__(self, camera_id=0):
+    def __init__(self, camera_id):
         self.camera_id = camera_id
         self.capture = cv2.VideoCapture(self.camera_id)
         if not self.capture.isOpened():

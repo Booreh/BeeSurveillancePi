@@ -4,10 +4,11 @@ from data.api_client import APIClient
 from data.services.setupProcedure import SetupProcedure
 import time
 
-webcam = Webcam()
+
 api_client = APIClient(base_url="http://example.com/api")
 console = Console("Main Console")
-setupProcedure = SetupProcedure(0)
+setupProcedure = SetupProcedure()
+
 
 def main():
     console.printWelcomeMessage()
@@ -17,6 +18,7 @@ def main():
         console.runningSetupProcedures()
 
         if setupProcedure.runAllSetupProcedures():
+            webcam = Webcam(setupProcedure.getDeviceData()["camera_id"])
             
             try:
                 while True:

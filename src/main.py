@@ -3,6 +3,7 @@ from data.camera import Webcam
 from data.api_client import APIClient
 from data.services.setupProcedure import SetupProcedure
 import time
+import cv2
 
 
 api_client = APIClient(base_url="http://example.com/api")
@@ -23,8 +24,8 @@ def main():
             try:
                 while True:
                     console.statusRunning()
-                    image_path = "images"  
-                    webcam.capture_image(image_path)
+                    image_folder = "images"  
+                    webcam.capture_image(image_folder, 1280, 720, 0)
                     
                     
             

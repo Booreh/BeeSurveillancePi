@@ -1,16 +1,20 @@
+import cv2
 
 class Image:
-    def __init__(self, file_path):
-        self.file_path = file_path
+    def __init__(self, image_data):
+        self.image_data = image_data
+        
 
-    def display(self):
-        #code to display the image
-        pass
-
+    
     def resize(self, width, height):
-        #code to resize the image
-        pass
+        resized_img = cv2.resize(self.image_data, (width, height))
+        return Image(resized_img)
 
     def rotate(self, angle):
-        #code to rotate the image
-        pass
+        if angle == 0:
+            return self
+        rotated_img = cv2.rotate(self.image_data, angle)
+        return Image(rotated_img)
+    
+    def save(self, file_path):
+        cv2.imwrite(file_path, self.image_data)

@@ -11,7 +11,8 @@ class Webcam:
         if not self.capture.isOpened():
             raise ValueError("Unable to connect to webcam. Please check the camera ID.")
 
-    def capture_image(self, folder_path):
+    def capture_image(self, folder_path, width, height, rotation):
+        
         ret, frame = self.capture.read()
         if ret:
 
@@ -20,16 +21,17 @@ class Webcam:
             timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
             file_name = f"image_{timestamp}.jpg"
-            
-
             file_path = os.path.join(folder_path, file_name)
             
             
-            time.sleep(1)
+            captured_image = Image(frame)
+            resized_image = captured_image.resize(width, height)
+            rotated_image = resized_image.rotate(rotation)
 
-            cv2.imwrite(file_path, frame)
+            rotated_image.save(file_path)
             print(f"Image captured and saved as {file_name}")
-            return Image(file_path)
+
+            return rotated_image
         else:
             print("Failed to capture image.")
 

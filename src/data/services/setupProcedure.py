@@ -15,7 +15,7 @@ class SetupProcedure:
         try:
             capture = cv2.VideoCapture(device_data["camera_id"])
             if not capture.isOpened():
-                print(f"Unable to connect to camera with id: {device_data["camera_id"]}. Please check the device for issues.")
+                print(f'Unable to connect to camera with id: {device_data["camera_id"]}. Please check the device for issues.')
                 return False
             else:
                 print("Camera Found")

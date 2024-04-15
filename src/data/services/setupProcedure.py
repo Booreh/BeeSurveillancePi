@@ -5,10 +5,16 @@ import subprocess
 import cv2
 class SetupProcedure:
     def __init__(self):
-        self.device_folder = "device"
-        self.device_file = os.path.join(self.device_folder, "device.json")
+        self.records_folder = "records"
+        self.device_file = os.path.join(self.records_folder, "device.json")
+        self.user_file = os.path.join(self.records_folder, "user.json")
         
     
+    def getDeviceData(self):
+        return read_json(self.device_file)
+    
+    def getUserData(self):
+        return read_json(self.user_file)
 
     def checkCameraConnection(self):
         device_data = self.getDeviceData()
@@ -45,14 +51,16 @@ class SetupProcedure:
     def generateDeviceId(self):
         return random.randint(1000, 9999)
     
-    def getDeviceData(self):
-        return read_json(self.device_file)
+    def retrieveUserId(self):
+        #will be used to retrieve id from API.
+        return 123
+    
         
 
-    def setDeviceData(self, device_data):
-        if not os.path.exists(self.device_folder):
-            os.makedirs(self.device_folder)
-        write_json(device_data, self.device_file)
+    def setRecordsFile(self, data, records_file):
+        if not os.path.exists(self.records_folder):
+            os.makedirs(self.records_folder)
+        write_json(data, records_file)
 
 
     
@@ -63,10 +71,20 @@ class SetupProcedure:
         else:
             print("No device Identification found. Generating new ones...")
             device_data = {"device_id": self.generateDeviceId(), "camera_id": 0}
-            self.setDeviceData(device_data)
+            self.setRecordsFile(device_data, self.device_file)
             print(f"New device ID ({device_data['device_id']}) and camera ID ({device_data['camera_id']}) generated.")
         return device_data
-
+    
+    def checkUserData(self):
+        user_data = self.getUserData()
+        if user_data:
+            print(f"User Identification found. userID: {user_data['user_id']}")
+        else:
+            print("No user Identification Found. Trying to retrieve from API")
+            user_data = {"user_id": self.retrieveUserId()}
+            self.setRecordsFile(user_data, self.user_file)
+            print(f"New user ID ({user_data['user_id']}) retrieved.")
+        return user_data
     
     
     
@@ -79,10 +97,12 @@ class SetupProcedure:
         Returns:
             bool: True if all setup procedures succeed, False otherwise.
         """
+        
         check_deviceData = self.checkDeviceData()
+        check_userData = self.checkUserData()
         camera_connected = self.checkCameraConnection()
         internet_access = self.checkInternetAccess()
         # Add more setup procedures here
         
         # Return True if all setup procedures succeed, False otherwise
-        return camera_connected and internet_access and check_deviceData is not None
+        return camera_connected and internet_access and check_deviceData is not None and check_userData is not None

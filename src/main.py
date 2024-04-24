@@ -28,7 +28,7 @@ def main():
             try:
                 while True:
                     console.statusRunning()  
-                    webcam.capture_image(image_folder, 1280, 720, 0)
+                    webcam.capture_image(image_folder, 1280, 720, 0, 0)
                     
                     imagecount = imageManager.countImages()
                     if imagecount >= 10:

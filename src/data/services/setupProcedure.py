@@ -8,16 +8,13 @@ class SetupProcedure:
         self.records_folder = "records"
         self.device_file = os.path.join(self.records_folder, "device.json")
         self.user_file = os.path.join(self.records_folder, "user.json")
-        
+        self.hive_file = os.path.join(self.records_folder, "hive.json")
     
     def getDeviceData(self):
         return read_json(self.device_file)
-    
-    def getUserData(self):
-        return read_json(self.user_file)
 
     def checkCameraConnection(self):
-        device_data = self.getDeviceData()
+        device_data = read_json(self.device_file)
         try:
             capture = cv2.VideoCapture(device_data["camera_id"])
             if not capture.isOpened():
@@ -49,11 +46,16 @@ class SetupProcedure:
     
 
     def generateDeviceId(self):
+        #will be used to retrieve device id from API.
         return random.randint(1000, 9999)
     
     def retrieveUserId(self):
-        #will be used to retrieve id from API.
-        return 123
+        #will be used to retrieve user id from API.
+        return "udhawiuwdfhw4238rwdaw22ej2hfg"
+    
+    def retrieveHiveId(self):
+        #will be used to retrieve hive id from API
+        return random.randint(1000, 9999)
     
         
 
@@ -65,44 +67,55 @@ class SetupProcedure:
 
     
     def checkDeviceData(self):
-        device_data = self.getDeviceData()
+        device_data = read_json(self.device_file)
         if device_data:
             print(f"Device Identification found. deviceID: {device_data['device_id']} cameraID: {device_data['camera_id']}")
         else:
             print("No device Identification found. Generating new ones...")
             device_data = {"device_id": self.generateDeviceId(), "camera_id": 0}
             self.setRecordsFile(device_data, self.device_file)
-            print(f"New device ID ({device_data['device_id']}) and camera ID ({device_data['camera_id']}) generated.")
+            print(f"New Device ID ({device_data['device_id']}) and camera ID ({device_data['camera_id']}) generated.")
         return device_data
     
     def checkUserData(self):
-        user_data = self.getUserData()
+        user_data = read_json(self.user_file)
         if user_data:
             print(f"User Identification found. userID: {user_data['user_id']}")
         else:
-            print("No user Identification Found. Trying to retrieve from API")
+            print("No user Identification found. Trying to retrieve from API...")
             user_data = {"user_id": self.retrieveUserId()}
             self.setRecordsFile(user_data, self.user_file)
-            print(f"New user ID ({user_data['user_id']}) retrieved.")
+            print(f"New User ID ({user_data['user_id']}) retrieved.")
         return user_data
+    
+
+    def checkHiveData(self):
+        hive_data = read_json(self.hive_file)
+        if hive_data:
+            print(f"Hive Identification found. HiveID: {hive_data['hive_id']}")
+        else:
+            print("No hive identification found. Trying to retrieve from API...")
+            hive_data = {"hive_id": self.retrieveHiveId()}
+            self.setRecordsFile(hive_data, self.hive_file)
+            print(f"New Hive ID ({hive_data['hive_id']}) retrieved.")
+        return hive_data
+
+
+    
+
     
     
     
 
 
     def runAllSetupProcedures(self):
-        """
-        Runs all setup procedures.
-        
-        Returns:
-            bool: True if all setup procedures succeed, False otherwise.
-        """
-        
-        check_deviceData = self.checkDeviceData()
-        check_userData = self.checkUserData()
-        camera_connected = self.checkCameraConnection()
-        internet_access = self.checkInternetAccess()
-        # Add more setup procedures here
-        
-        # Return True if all setup procedures succeed, False otherwise
-        return camera_connected and internet_access and check_deviceData is not None and check_userData is not None
+
+        setup_procedures = [
+            self.checkDeviceData,
+            self.checkUserData,
+            self.checkHiveData,
+            self.checkCameraConnection,
+            self.checkInternetAccess
+        ]
+
+        return all(procedure() for procedure in setup_procedures)

@@ -12,6 +12,12 @@ class SetupProcedure:
     
     def getDeviceData(self):
         return read_json(self.device_file)
+    
+    def getUserData(self):
+        return read_json(self.user_file)
+    
+    def getHiveData(self):
+        return read_json(self.hive_file)
 
     def checkCameraConnection(self):
         device_data = read_json(self.device_file)

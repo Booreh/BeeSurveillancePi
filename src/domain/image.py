@@ -3,6 +3,7 @@ import cv2
 class Image:
     def __init__(self, image_data):
         self.image_data = image_data
+        self.file_path = None
         
 
     
@@ -18,3 +19,7 @@ class Image:
     
     def save(self, file_path):
         cv2.imwrite(file_path, self.image_data)
+        self.file_path = file_path
+
+    def getFilePath(self):
+        return self.file_path

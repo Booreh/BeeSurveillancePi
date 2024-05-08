@@ -11,7 +11,7 @@ api_client = APIClient(base_url="http://example.com/api")
 console = Console("Main Console")
 setupProcedure = SetupProcedure()
 imageManager = ImageManager(image_folder)
-
+api = APIClient("localhost")
 
 
 
@@ -25,16 +25,24 @@ def main():
         if setupProcedure.runAllSetupProcedures():
             webcam = Webcam(setupProcedure.getDeviceData()["camera_id"])
             
+
+            #api.upload_image(setupProcedure.getUserData()["user_id"], )
+            
             try:
                 while True:
                     console.statusRunning()  
-                    webcam.capture_image(image_folder, 1280, 720, 0)
-                    
+                    image_capture = webcam.capture_image(image_folder, 1280, 720, 0)
+                    current_image = image_capture.getFilePath()
+                    print(f"current image path is: {current_image}")
+
+                    #api.upload_image(setupProcedure.getUserData()["user_id"], current_image)
+
+
                     imagecount = imageManager.countImages()
                     if imagecount >= 10:
                         imageManager.deleteExcessImages(10)
             
-                    time.sleep(3600)  #interval pr.photo
+                    time.sleep(720)  #5 images per hour.
             except KeyboardInterrupt:
                 #  handle Ctrl+C (KeyboardInterrupt)
                 webcam.release()

@@ -4,9 +4,10 @@ class APIClient:
     def __init__(self, base_url):
         self.base_url = base_url
 
-    def upload_image(self, image_path):
+
+    def upload_image(self, user_id, image_path):
         try:
-            url = f"{self.base_url}/upload"  # Replace '/upload' with the endpoint path
+            url = f"{self.base_url}/V1/images/upload/?user_id={user_id}"
             files = {'image': open(image_path, 'rb')}
             response = requests.post(url, files=files)
             response.raise_for_status()  # Raise exception for HTTP errors (e.g., 404, 500)

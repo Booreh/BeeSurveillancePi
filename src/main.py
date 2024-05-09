@@ -7,11 +7,10 @@ import time
 import cv2
 
 image_folder = "images"
-api_client = APIClient(base_url="http://example.com/api")
 console = Console("Main Console")
 setupProcedure = SetupProcedure()
 imageManager = ImageManager(image_folder)
-api = APIClient("localhost")
+api = APIClient("http://158.39.162.139:8006")
 
 
 
@@ -26,21 +25,17 @@ def main():
             webcam = Webcam(setupProcedure.getDeviceData()["camera_id"])
             
 
-            #api.upload_image(setupProcedure.getUserData()["user_id"], )
             
             try:
                 while True:
                     console.statusRunning()  
                     image_capture = webcam.capture_image(image_folder, 1280, 720, 0)
                     current_image = image_capture.getFilePath()
-                    print(f"current image path is: {current_image}")
-
-                    #api.upload_image(setupProcedure.getUserData()["user_id"], current_image)
-
+                    api.upload_image(setupProcedure.getUserData()["user_id"], setupProcedure.getDeviceData()["device_id"], current_image)
 
                     imagecount = imageManager.countImages()
-                    if imagecount >= 10:
-                        imageManager.deleteExcessImages(10)
+                    if imagecount >= 50:
+                        imageManager.deleteExcessImages(50)
             
                     time.sleep(720)  #5 images per hour.
             except KeyboardInterrupt:

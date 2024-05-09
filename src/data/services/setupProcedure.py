@@ -1,14 +1,31 @@
 from data.services.jsonUtils import read_json, write_json
+from data.api_client import APIClient
 import os
-import random
 import subprocess
 import cv2
+import socket
+
+
 class SetupProcedure:
     def __init__(self):
         self.records_folder = "records"
         self.device_file = os.path.join(self.records_folder, "device.json")
         self.user_file = os.path.join(self.records_folder, "user.json")
         self.hive_file = os.path.join(self.records_folder, "hive.json")
+
+    def getlocalIpAdress(self):
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            sock.connect(("8.8.8.8", 80))
+            local_ip = sock.getsockname()[0]
+            sock.close()
+            print(f"This is your ip: {str(local_ip)}")
+            return str(local_ip)
+        
+        except Exception as e:
+            print("Error:", e)
+            return None
+
     
     def getDeviceData(self):
         return read_json(self.device_file)
@@ -50,18 +67,15 @@ class SetupProcedure:
     def checkServerConnection(self):
         return True
     
-
-    def generateDeviceId(self):
-        #will be used to retrieve device id from API.
-        return random.randint(1000, 9999)
-    
     def retrieveUserId(self):
         #will be used to retrieve user id from API.
         return "udhawiuwdfhw4238rwdaw22ej2hfg"
     
     def retrieveHiveId(self):
         #will be used to retrieve hive id from API
-        return random.randint(1000, 9999)
+        return "123"
+    
+
     
         
 
@@ -77,8 +91,11 @@ class SetupProcedure:
         if device_data:
             print(f"Device Identification found. deviceID: {device_data['device_id']} cameraID: {device_data['camera_id']}")
         else:
-            print("No device Identification found. Generating new ones...")
-            device_data = {"device_id": self.generateDeviceId(), "camera_id": 0}
+            print("No Device Identification found. Retrieving from API....")
+            api = APIClient("http://158.39.162.139:8007")
+            deviceIdCall = api.retrieveDeviceId(userid=self.getUserData()["user_id"], hiveid=self.getHiveData()["hive_id"], ipadress= self.getlocalIpAdress())
+
+            device_data = {"device_id": deviceIdCall, "camera_id": 0}
             self.setRecordsFile(device_data, self.device_file)
             print(f"New Device ID ({device_data['device_id']}) and camera ID ({device_data['camera_id']}) generated.")
         return device_data
@@ -107,19 +124,12 @@ class SetupProcedure:
         return hive_data
 
 
-    
-
-    
-    
-    
-
-
     def runAllSetupProcedures(self):
 
         setup_procedures = [
-            self.checkDeviceData,
             self.checkUserData,
             self.checkHiveData,
+            self.checkDeviceData,
             self.checkCameraConnection,
             self.checkInternetAccess
         ]

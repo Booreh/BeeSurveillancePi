@@ -4,7 +4,8 @@ import os
 import subprocess
 import cv2
 import socket
-
+from datetime import datetime
+from pijuice import PiJuice
 
 class SetupProcedure:
     def __init__(self):
@@ -12,6 +13,7 @@ class SetupProcedure:
         self.device_file = os.path.join(self.records_folder, "device.json")
         self.user_file = os.path.join(self.records_folder, "user.json")
         self.hive_file = os.path.join(self.records_folder, "hive.json")
+        self.pijuice = PiJuice(1, 0x14)
 
     def getlocalIpAdress(self):
         try:
@@ -83,6 +85,17 @@ class SetupProcedure:
         if not os.path.exists(self.records_folder):
             os.makedirs(self.records_folder)
         write_json(data, records_file)
+
+
+    def shutDownSchedule(self):
+        try:
+            currentTime = datetime.now()
+            if 0 <= currentTime.hour < 1:
+                self.pijuice.power.SetPowerOff(5)
+        except Exception as e:
+            print(f"Error occurred during shutdown: {str(e)}")
+
+
 
 
     

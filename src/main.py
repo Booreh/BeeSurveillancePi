@@ -36,7 +36,9 @@ def main():
                     imagecount = imageManager.countImages()
                     if imagecount >= 50:
                         imageManager.deleteExcessImages(50)
-            
+
+
+                    setupProcedure.shutDownSchedule()
                     time.sleep(720)  #5 images per hour.
             except KeyboardInterrupt:
                 #  handle Ctrl+C (KeyboardInterrupt)

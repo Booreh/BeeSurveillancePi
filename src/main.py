@@ -28,14 +28,13 @@ def main():
             try:
                 while True:
                     console.statusRunning()  
-                    image_capture = webcam.capture_image(image_folder, 1280, 720, 0)
+                    image_capture = webcam.capture_image(image_folder, 640, 640, 0)
                     current_image = image_capture.getFilePath()
                     api.upload_image(setupProcedure.getUserData()["user_id"], setupProcedure.getDeviceData()["device_id"], current_image)
 
                     imagecount = imageManager.countImages()
-                    if imagecount >= 50:
-                        imageManager.deleteExcessImages(50)
-
+                    if imagecount >= 100:
+                        imageManager.deleteExcessImages(100)
 
                     setupProcedure.shutDownSchedule()
                     time.sleep(720)  

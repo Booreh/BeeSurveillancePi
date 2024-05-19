@@ -5,8 +5,6 @@ class Image:
         self.image_data = image_data
         self.file_path = None
         
-
-    
     def resize(self, width, height):
         resized_img = cv2.resize(self.image_data, (width, height))
         return Image(resized_img)

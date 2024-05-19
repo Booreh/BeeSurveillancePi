@@ -50,12 +50,11 @@ class SetupProcedure:
                 capture.release()
                 return True
         except Exception as e:
-            # Handling for any exceptions (e.g., OpenCV errors)
             print(f"Error while checking camera connection: {e}")
             return False
 
 
-    #Run IDE as admin, may also need to turn of firewall
+
     def checkInternetAccess(self):
         try:
             subprocess.check_output(["ping", "-c", "1", "8.8.8.8"])

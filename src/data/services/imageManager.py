@@ -5,15 +5,13 @@ class ImageManager:
         self.image_folder = image_folder
 
 
-
     def countImages(self):
         if os.path.exists(self.image_folder):
             return len(os.listdir(self.image_folder))
         else:
             return 0
         
-    
-    
+
     def deleteExcessImages(self, num_to_delete):
         images = os.listdir(self.image_folder)
         if len(images) < num_to_delete:

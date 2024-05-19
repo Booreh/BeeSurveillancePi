@@ -2,7 +2,6 @@ import cv2
 import os
 from datetime import datetime
 from domain.image import Image
-import time
 
 class Webcam:
     def __init__(self, camera_id):
@@ -23,7 +22,6 @@ class Webcam:
             file_name = f"image_{timestamp}.jpg"
             file_path = os.path.join(folder_path, file_name)
             
-            
             captured_image = Image(frame)
             resized_image = captured_image.resize(width, height)
             rotated_image = resized_image.rotate(rotation)
@@ -38,8 +36,4 @@ class Webcam:
     def release(self):
         self.capture.release()
 
-if __name__ == "__main__":
-    # Example usage
-    webcam = Webcam()
-    webcam.capture_image("image.jpg")
-    webcam.release()
+

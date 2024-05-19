@@ -4,7 +4,6 @@ from data.api_client import APIClient
 from data.services.setupProcedure import SetupProcedure
 from data.services.imageManager import ImageManager
 import time
-import cv2
 
 image_folder = "images"
 console = Console("Main Console")
@@ -39,9 +38,8 @@ def main():
 
 
                     setupProcedure.shutDownSchedule()
-                    time.sleep(720)  #5 images per hour.
+                    time.sleep(720)  
             except KeyboardInterrupt:
-                #  handle Ctrl+C (KeyboardInterrupt)
                 webcam.release()
         else: 
             console.errorSetupFailed()
@@ -53,7 +51,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-
-
-#api_client.upload_image(image_path)
     

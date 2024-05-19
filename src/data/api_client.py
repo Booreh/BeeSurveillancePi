@@ -43,6 +43,5 @@ class APIClient:
             return False
 
 
-if __name__ == "__main__":
-    api_client = APIClient(base_url="http://example.com/api")  
-    api_client.upload_image("path/to/image.jpg")
+
+

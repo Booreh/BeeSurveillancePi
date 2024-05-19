@@ -29,10 +29,5 @@ class Console:
     def errorSetupFailed(self):
         print("Setup procedure failed, please check logs for details.")
 
-    
 
-#print("Running...")
-#print("Exiting...")
-#print("Image captured and uploaded successfully.")
 
-# Logging?

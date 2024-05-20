@@ -89,7 +89,7 @@ class SetupProcedure:
     def shutDownSchedule(self):
         try:
             currentTime = datetime.now()
-            if 0 <= currentTime.hour < 1:
+            if currentTime.hour >= 21:
                 self.pijuice.power.SetPowerOff(5)
         except Exception as e:
             print(f"Error occurred during shutdown: {str(e)}")
